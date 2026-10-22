@@ -1,5 +1,16 @@
-<title>Ton Grand Jour</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#170d2a">
+<meta name="description" content="Un petit cadeau pour Gracieuse, pour son anniversaire.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Joyeux anniversaire, Gracieuse">
+<meta property="og:description" content="Un petit cadeau rien que pour toi. Ouvre-le !">
+<meta property="og:image" content="https://gbodogbejores5-a11y.github.io/joyeux-anniversaire/img/studio-debout.jpg">
+<meta property="og:url" content="https://gbodogbejores5-a11y.github.io/joyeux-anniversaire/">
+<title>Joyeux anniversaire, Gracieuse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
@@ -78,6 +89,7 @@ a{color:inherit}
 @keyframes scroll{to{transform:translateX(-50%)}}
 
 section{padding-block:clamp(56px,9vw,120px)}
+section.tight{padding-block:clamp(8px,2vw,24px)}
 .head{display:flex;flex-direction:column;gap:12px;margin-bottom:clamp(28px,4vw,52px);max-width:60ch}
 .head h2{font-size:clamp(2.2rem,5.4vw,4rem)}
 .head h2 em{font-style:italic;font-weight:400}
@@ -88,7 +100,7 @@ section{padding-block:clamp(56px,9vw,120px)}
   box-shadow:0 0 0 1px var(--line),0 50px 100px -30px rgba(0,0,0,.7)}
 .slide{position:absolute;inset:0;opacity:0;transition:opacity 1.3s ease;pointer-events:none}
 .slide.on{opacity:1;pointer-events:auto}
-.slide .bg{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(34px) saturate(1.2) brightness(.7)}
+.slide .bg{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(22px) saturate(1.2) brightness(.7)}
 .slide .fg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:clamp(8px,2vw,22px);transform:scale(1)}
 .slide.on .fg{animation:zoom 7s ease-out forwards}
 @keyframes zoom{from{transform:scale(1)}to{transform:scale(1.045)}}
@@ -197,7 +209,11 @@ footer .script{font-size:2rem;color:var(--gold);display:block}
   .stage{aspect-ratio:4/5}
   .nav{width:40px;height:40px}
   .thumbs{grid-template-columns:repeat(7,1fr);gap:6px}
-  .seal,.seal-core{width:104px;height:104px;right:-8px;bottom:-14px}
+  .seal,.seal-core{width:104px;height:104px;right:-6px;bottom:-14px}
+  .hero{padding-top:28px}
+  .shots.two figure:nth-child(2){margin-top:22px}
+  .nav{display:none}
+  .stage{touch-action:pan-y}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
@@ -206,6 +222,8 @@ footer .script{font-size:2rem;color:var(--gold);display:block}
 }
 </style>
 
+</head>
+<body>
 <canvas id="petals" aria-hidden="true"></canvas>
 
 <header class="hero" id="haut">
@@ -252,7 +270,7 @@ footer .script{font-size:2rem;color:var(--gold);display:block}
     <div class="head will">
       <span class="eyebrow">Diaporama</span>
       <h2>Toi, en <em>pleine lumière</em></h2>
-      <p>Les images défilent toutes seules. Touche les flèches ou les miniatures pour choisir.</p>
+      <p>Les images défilent toutes seules. Glisse du doigt ou touche une miniature pour choisir.</p>
     </div>
     <div class="stage will" id="stage" aria-roledescription="carrousel" aria-label="Diaporama de photos">
       <div class="bar" id="bar"></div>
@@ -262,7 +280,7 @@ footer .script{font-size:2rem;color:var(--gold);display:block}
     <div class="thumbs will" id="thumbs"></div>
   </section>
 
-  <section>
+  <section class="tight">
     <div class="film" aria-hidden="true"><div class="film-track" id="ft"></div></div>
   </section>
 
@@ -417,8 +435,9 @@ var DUR = 5500;
   function restart(){clearInterval(timer); if(!reduce){timer=setInterval(function(){if(!paused)go(idx+1)},DUR)}}
   document.getElementById('prev').onclick=function(){go(idx-1,true)};
   document.getElementById('next').onclick=function(){go(idx+1,true)};
-  stage.addEventListener('mouseenter',function(){paused=true;bar.style.animationPlayState='paused'});
-  stage.addEventListener('mouseleave',function(){paused=false;go(idx,true)});
+  /* pause au survol seulement avec une souris (sur téléphone, le toucher ne doit jamais bloquer le défilement) */
+  stage.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse'){paused=true;bar.style.animationPlayState='paused'}});
+  stage.addEventListener('pointerleave',function(e){if(e.pointerType==='mouse'){paused=false;go(idx,true)}});
   var x0=null;
   stage.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
   stage.addEventListener('touchend',function(e){if(x0===null)return;var d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>40)go(idx+(d<0?1:-1),true);x0=null});
@@ -479,3 +498,5 @@ var DUR = 5500;
   if(!reduce){setTimeout(function(){burst(W/2,H*.35,90)},700)}
 })();
 </script>
+</body>
+</html>
